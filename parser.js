@@ -1,8 +1,8 @@
-import Parser from "node-xml-stream";
-import last from "lodash/fp/last";
+const Parser = require("node-xml-stream");
+const last = require("lodash/fp/last");
 
 // we suplay array result to collect results
-export function createParser() {
+function createParser() {
   const parser = new Parser();
 
   // this is a stack for all open tags
@@ -52,3 +52,7 @@ export function createParser() {
 
   return { parsedRecords, wStream: parser };
 }
+
+module.exports = {
+  createParser
+};
