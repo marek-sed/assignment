@@ -4,8 +4,22 @@
   "description": "Fullstack engineering assignemnent",
   "main": "index.js",
   "scripts": {
+    "start": "babel-node --presets env -- index.js",
+    "db": "babel-node --presets env -- db.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "cli-progress": "^1.7.0",
+    "dotenv": "^5.0.0",
+    "lodash": "^4.17.5",
+    "node-fetch": "^2.0.0",
+    "node-xml-stream": "^1.0.2",
+    "pg": "^7.4.1",
+    "puresql": "^1.6.0",
+    "xml2js": "^0.4.19"
+  }
 }
