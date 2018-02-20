@@ -1,6 +1,11 @@
 const last = require("lodash/fp/last");
 
+// O(n) the rows are ordered so we do not have to traverse the tree
+// If we had to traverse it would be O(n^2) worst case and O(nlogn) best case
+
 function treeOfLife(rows) {
+  console.log('planting tree');
+
   const r1 = rows.shift();
   const root = {
     name: r1.name,

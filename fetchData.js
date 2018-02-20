@@ -9,7 +9,7 @@ const nodeCount = 60942;
 const transformationBar = new progress.Bar({}, progress.Presets.shades_classic);
 
 
-async function loadData(parser) {
+async function fetchData(parser) {
   let records = null;
   try {
     console.log("fetching data");
@@ -32,5 +32,5 @@ async function loadData(parser) {
 }
 
 module.exports = {
-  loadData
+  fetchData
 };
