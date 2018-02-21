@@ -1,7 +1,6 @@
 const Parser = require("node-xml-stream");
 const last = require("lodash/fp/last");
 
-// we suplay array result to collect results
 function createParser() {
   const parser = new Parser();
 
