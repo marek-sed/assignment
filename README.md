@@ -21,11 +21,11 @@ Interview assignment
 
 ## Running
   * create .env file 
-     PGUSER=
-     PGHOST=
-     PGPASSWORD=
-     PGDATABASE=
-     PGPORT=
+    * PGUSER=
+    * PGHOST=
+    * PGPASSWORD=
+    * PGDATABASE=
+    * PGPORT=
 
   * development version - npm start 
   * production - cd client && npm run build && cd .. && npm run serve
