@@ -16,10 +16,16 @@ Interview assignment
 ### Installing
 
   * git clone https://github.com/marek-sed/assignment.git
-  * npm i
+  * npm i && cd client npm i
   * node server/initData.js (loads data to db)
 
 ## Running
+  * create .env file 
+     PGUSER=
+     PGHOST=
+     PGPASSWORD=
+     PGDATABASE=
+     PGPORT=
 
   * development version - npm start 
   * production - cd client && npm run build && cd .. && npm run serve
