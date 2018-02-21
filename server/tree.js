@@ -3,11 +3,13 @@ const last = require("lodash/fp/last");
 // O(n) the rows are ordered so we do not have to traverse the tree
 // If we had to traverse it would be O(n^2) worst case and O(nlogn) best case
 
-function treeOfLife(rows) {
+function plantATree(rows) {
   console.log('planting tree');
 
   const r1 = rows.shift();
   const root = {
+    id: r1.id,
+    path: `${r1.id}`,
     name: r1.name,
     size: r1.size,
     children: []
@@ -32,12 +34,16 @@ function treeOfLife(rows) {
       const nextParent = last(parent.children);
       openedTags.push(nextParent);
       nextParent.children.push({
+        id: el.id,
+        path: `${nextParent.id}.${el.id}`,
         name: last(fullPath),
         size: el.size,
         children: []
       });
     } else if (distance === -1) {
       parent.children.push({
+        id: el.id,
+        path: `${parent.id}.${el.id}`,
         name: last(fullPath),
         size: el.size,
         children: []
@@ -46,6 +52,8 @@ function treeOfLife(rows) {
       openedTags = openedTags.slice(0, openedTags.length - distance - 1);
       const nextParent = last(openedTags);
       nextParent.children.push({
+        id: el.id,
+        path: `${nextParent.id}.${el.id}`,
         name: last(fullPath),
         size: el.size,
         children: []
@@ -59,5 +67,5 @@ function treeOfLife(rows) {
 }
 
 module.exports = {
-  treeOfLife
+  plantATree
 };
