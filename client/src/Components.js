@@ -17,19 +17,6 @@ export const Loading = styled.div`
   margin: 1rem 1.5rem;
 `;
 
-export const List = styled.ul`
-  padding: 0;
-  margin: 0;
-  margin-top: ${props => props.marginTop || 0};
-  margin-left: 1.5rem;
-`;
-
-export const Li = styled.li`
-  display: block;
-  line-height: 20px;
-  list-style: none;
-`;
-
 export const Triangle = styled.div`
   display: inline-block;
   vertical-align: middle;

@@ -1,36 +1,8 @@
 import React from "react";
 import Highlighter from "react-highlight-words";
-import { Li, List, Size, Name, Triangle } from "./Components";
-import { getAll } from "./utils";
-
-const ListItem = ({
-  name,
-  size,
-  clickable,
-  children,
-  searchTerm,
-  isExpanded,
-  isInPath,
-  onClick
-}) => (
-  <Li clickable={clickable}>
-    <Name
-      isExpanded={isExpanded}
-      clickable={clickable && searchTerm.length < 2}
-      onClick={onClick}
-    >
-      {clickable && <Triangle isExpanded={isExpanded} />}
-      <Highlighter
-        caseSensitive={true}
-        highlightStyle={{ color: "#AE6855", backgroundColor: "transparent" }}
-        textToHighlight={name || ""}
-        searchWords={[searchTerm]}
-      />
-      <Size>({size})</Size>
-    </Name>
-    {children}
-  </Li>
-);
+import { Size, Name, Triangle } from "./Components";
+import { List as VList, AutoSizer } from "react-virtualized";
+import { flattenTree } from "./utils";
 
 export const Display = props => {
   const {
@@ -45,7 +17,6 @@ export const Display = props => {
     toggle
   } = props;
   const clickable = size > 0;
-  console.log("rendering", searchTerm);
   return (
     <Name
       depth={depth}
@@ -66,63 +37,92 @@ export const Display = props => {
   );
 };
 
-export class Node extends React.Component {
-  /**
-   * component updates when data changes, we use ImmuatableJs,
-   * so comparing complex trees is cheap
-   * we also disable rendrering while searching due to performance issues
-   * @param  {object} nextProps
-   */
-  shouldComponentUpdate(nextProps) {
-    return (
-      !this.props.data.equals(nextProps.data) ||
-      (nextProps.isSearching === false &&
-        this.props.searchTerm !== nextProps.searchTerm)
-    );
+export class Tree extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      flatTree: flattenTree(props.tree)
+    };
   }
 
-  render() {
-    const { data, toggle, searchTerm, isSearching } = this.props;
-    const [id, name, size, children] = getAll(
-      null,
-      "id",
-      "name",
-      "size",
-      "children"
-    )(data);
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.searchTerm.length > 2) {
+      const flatTree = flattenTree(nextProps.tree).filter(n => n.isInPath);
+      this.setState({ flatTree });
+    } else {
+      this.setState({
+        flatTree: flattenTree(nextProps.tree)
+      });
+    }
+  }
 
-    const [isExpanded, isInPath] = getAll(false, "isExpanded", "isInPath")(
-      data
-    );
-    const clickable = size > 0;
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.flatTree.length === this.state.flatTree.length) {
+      if (prevProps.searchTerm !== this.props.searchTerm) {
+        // highlighter wont work on same size list
+        this._list.forceUpdateGrid();
+      }
+    }
+  }
+
+  _rowRenderer = ({ index, style, key }) => {
+    const { flatTree } = this.state;
+    const { searchTerm } = this.props;
+
+    if (flatTree.length > 0) {
+      const {
+        id,
+        name,
+        size,
+        children,
+        depth,
+        isExpanded,
+        isInPath
+      } = flatTree[index];
+
+      return (
+        <Display
+          key={key}
+          style={style}
+          name={name}
+          size={size}
+          depth={depth}
+          searchTerm={searchTerm}
+          isInPath={true}
+          isExpanded={isExpanded}
+          toggle={() => this.props.toggle(id)}
+        />
+      );
+    }
+
+    return null;
+  };
+
+  render() {
+    const {
+      flatTree,
+      isFetching,
+      isSearching,
+      searchTerm,
+      expanded
+    } = this.state;
 
     return (
-      <ListItem
-        name={name}
-        size={size}
-        searchTerm={searchTerm}
-        isExpanded={isExpanded}
-        isInPath={isInPath}
-        clickable={clickable}
-        onClick={() => clickable && searchTerm.length < 2 && toggle(id)}
-      >
-        {(isInPath || isExpanded) &&
-          size > 0 && (
-            <List>
-              {children
-                .filter(n => (searchTerm.length > 2 ? n.get("isInPath") : true))
-                .map((node, i) => (
-                  <Node
-                    key={node.get("id")}
-                    isSearching={isSearching}
-                    searchTerm={searchTerm}
-                    data={node}
-                    toggle={toggle}
-                  />
-                ))}
-            </List>
+      <div style={{ margin: "1rem 0 0 1.5rem" }}>
+        <AutoSizer disableHeight>
+          {({ width }) => (
+            <VList
+              ref={ref => (this._list = ref)}
+              height={1500}
+              overscanRowCount={10}
+              rowCount={flatTree.length}
+              rowHeight={24.5}
+              rowRenderer={this._rowRenderer}
+              width={width}
+            />
           )}
-      </ListItem>
+        </AutoSizer>
+      </div>
     );
   }
 }
