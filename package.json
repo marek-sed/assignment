@@ -20,11 +20,9 @@
     "lodash": "^4.17.5",
     "node-fetch": "^2.0.0",
     "node-xml-stream": "^1.0.2",
-    "pg": "^7.4.1",
-    "react-virtualized": "^9.18.5"
+    "pg": "^7.4.1"
   },
   "devDependencies": {
-    "concurrently": "^3.5.1",
     "create-react-app": "^1.5.2"
   }
 }

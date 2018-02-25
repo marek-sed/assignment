@@ -1,6 +1,5 @@
 import React from "react";
 import { injectGlobal } from "styled-components";
-import I, { fromJS } from "immutable";
 import { Loading, List, Page, Header, H1, Input } from "./Components";
 import { Node, Display } from "./Tree";
 import { getAll, flattenTree } from "./utils";
@@ -108,24 +107,18 @@ class App extends React.Component {
   }
 
   search(evt) {
-    if (this._doneTyping) {
-      clearTimeout(this._doneTyping);
-    }
-
     const term = evt.target.value;
     const isSearching = term.length > 2;
     this.setState({ searchTerm: term, isSearching });
     if (isSearching) {
-      this._doneTyping = setTimeout(() => {
-        this.setState(state => {
-          const searchedTree = search(state.tree, state.searchTerm);
-          return {
-            ...state,
-            searchedTree,
-            isSearching: false
-          };
-        });
-      }, 200);
+      this.setState(state => {
+        const searchedTree = search(state.tree, state.searchTerm);
+        return {
+          ...state,
+          searchedTree,
+          isSearching: false
+        };
+      });
     } else {
       this.setState({ searchedTree: {}, isSearching: false });
     }
