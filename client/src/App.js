@@ -130,7 +130,7 @@ class App extends React.Component {
             isSearching: false
           };
         });
-      }, 0);
+      }, 200);
     } else {
       this.setState({ searchedTree: I.Map({}), isSearching: false });
     }
