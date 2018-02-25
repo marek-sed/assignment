@@ -5,7 +5,6 @@ import { Loading, List, Page, Header, H1, Input } from "./Components";
 import { Node, Display } from "./Tree";
 import { getAll, flattenTree } from "./utils";
 import { List as VList, AutoSizer } from "react-virtualized";
-import { throttle } from "throttle-debounce";
 
 injectGlobal`
   html, body {
@@ -30,17 +29,18 @@ injectGlobal`
  * @param  {Number} id
  */
 function toggleNode(node, id) {
-  if (id === node.get("id")) {
-    return node.update("isExpanded", isExpanded => !isExpanded);
+  if (id === node.id) {
+    return { ...node, isExpanded: !node.isExpanded };
   }
 
-  const size = node.get("size");
-  if (size === 0) {
-    return node;
+  if (node.size === 0) {
+    return { ...node };
   }
-  return node.update("children", children =>
-    children.map(n => toggleNode(n, id))
-  );
+
+  return {
+    ...node,
+    children: [...node.children.map(n => toggleNode(n, id))]
+  };
 }
 
 /**
@@ -51,26 +51,25 @@ function toggleNode(node, id) {
  */
 function search(node, term) {
   // we recurse first so we set setInPath on children first
-  const nextNode = node.update("children", children =>
-    children.map(n => search(n, term))
-  );
-  const name = nextNode.get("name");
-  const children = nextNode.get("children");
-  if (children.some(n => n.get("isInPath"))) {
-    return nextNode.set("isInPath", true).set("isExpanded", true);
-  } else if (name.includes(term)) {
-    return nextNode
-      .update("children", children =>
-        children.map(n => n.set("isInPath", true))
-      )
-      .set("isInPath", true);
-  } else {
-    return nextNode
-      .update("children", children =>
-        children.map(n => n.set("isInPath", false))
-      )
-      .set("isInPath", false);
+  const nextNode = {
+    ...node,
+    children: [...node.children.map(n => search(n, term))]
+  };
+
+  if (nextNode.children.some(n => n.isInPath)) {
+    return {
+      ...nextNode,
+      isInPath: true,
+      isExpanded: true
+    };
+  } else if (nextNode.name.includes(term)) {
+    return {
+      ...nextNode,
+      children: [...nextNode.children.map(n => ({ ...n, isInPath: true }))],
+      isInPath: true
+    };
   }
+
   return nextNode;
 }
 
@@ -78,8 +77,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tree: I.Map({}),
-      searchedTree: I.Map({}),
+      tree: {},
+      searchedTree: {},
       searchTerm: "",
       isFetching: false
     };
@@ -92,17 +91,13 @@ class App extends React.Component {
     this.setState({ isFetching: true });
     fetch("/tree")
       .then(res => res.json())
-      .then(json => this.setState({ tree: fromJS(json), isFetching: false }))
+      .then(json => this.setState({ tree: json, isFetching: false }))
       .catch(err => {
         console.log("fetch failed");
       });
   }
 
   toggle(id) {
-    const tree =
-      this.state.searchTerm.length > 2
-        ? this.state.searchedTree
-        : this.state.tree;
     if (this.state.searchTerm.length > 2) {
       const newTree = toggleNode(this.state.searchedTree, id);
       this.setState({ searchedTree: newTree });
@@ -132,7 +127,7 @@ class App extends React.Component {
         });
       }, 200);
     } else {
-      this.setState({ searchedTree: I.Map({}), isSearching: false });
+      this.setState({ searchedTree: {}, isSearching: false });
     }
   }
 

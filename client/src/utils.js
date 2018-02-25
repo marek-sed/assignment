@@ -1,3 +1,4 @@
+import { isEmpty } from "lodash";
 /**
  * returns {Array} of children on keys provided after first argument
  * @param  {any} notFound - value returned if get fails
@@ -8,14 +9,11 @@ export const getAll = (notFound, ...args) => data =>
 
 const flattenNodes = (nodes, parents = []) => {
   return nodes.reduce((acc, node) => {
-    const id = node.get("id");
-    const children = node.get("children");
-    const name = node.get("name");
-    const size = node.get("size");
-    const isExpanded = node.get('isExpanded', false);
-    const isInPath = node.get('isInPath', false);
+    const { id, children, name, size } = node;
+    const isExpanded = node.isExpanded || false;
+    const isInPath = node.isInPath || false;
     const depth = parents.length;
-    const childrenIds = children.map(child => child.get('id'));
+    const childrenIds = children.map(child => child.id);
 
     const enhancedNode = {
       id,
@@ -36,4 +34,6 @@ const flattenNodes = (nodes, parents = []) => {
   }, []);
 };
 
-export const flattenTree = root => (root.isEmpty() ? [] : flattenNodes([root]));
+export const flattenTree = root => (isEmpty(root) ? 
+[] : 
+flattenNodes([root]));
