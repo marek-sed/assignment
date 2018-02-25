@@ -1,13 +1,7 @@
-import React from 'react';
+import React from "react";
 import Highlighter from "react-highlight-words";
-import {
-  Li,
-  List,
-  Size,
-  Name,
-  Triangle
-} from "./Components";
-import { getAll } from './utils';
+import { Li, List, Size, Name, Triangle } from "./Components";
+import { getAll } from "./utils";
 
 const ListItem = ({
   name,
@@ -38,12 +32,45 @@ const ListItem = ({
   </Li>
 );
 
+export const Display = props => {
+  const {
+    style,
+    id,
+    name,
+    size,
+    depth,
+    searchTerm,
+    isExpanded,
+    isInPath,
+    toggle
+  } = props;
+  const clickable = size > 0;
+  console.log("rendering", searchTerm);
+  return (
+    <Name
+      depth={depth}
+      style={style}
+      isExpanded={isExpanded}
+      clickable={clickable}
+      onClick={toggle}
+    >
+      {clickable && <Triangle isExpanded={isExpanded} />}
+      <Highlighter
+        caseSensitive={true}
+        highlightStyle={{ color: "#AE6855", backgroundColor: "transparent" }}
+        textToHighlight={name || ""}
+        searchWords={[searchTerm]}
+      />
+      <Size>({size})</Size>
+    </Name>
+  );
+};
 
 export class Node extends React.Component {
   /**
    * component updates when data changes, we use ImmuatableJs,
    * so comparing complex trees is cheap
-   * we also disable rendrering while searching due to performance issues 
+   * we also disable rendrering while searching due to performance issues
    * @param  {object} nextProps
    */
   shouldComponentUpdate(nextProps) {

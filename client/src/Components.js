@@ -59,9 +59,9 @@ export const Name = styled.div`
   cursor: default;
 
   ${props =>
-    props.clickable &&
     css`
-      cursor: pointer;
+      cursor: ${props.clickable ?  'pointer' : 'default'};
+      margin-left: ${props.depth > 0 ? `${props.depth * 1.5}rem` : 0 };
     `};
 `;
 export const Size = styled.span`
