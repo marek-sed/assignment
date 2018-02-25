@@ -48,14 +48,14 @@ export const Triangle = styled.div`
 export const H1 = styled.h1`
   font-size: 1.5rem;
   margin: 0;
-  color: white;
+  color: #c1b4b5;
 `;
 
 export const Name = styled.div`
   display: inline-block;
   line-height: 1.5rem;
   vertical-align: middle;
-  color: ${props => (props.isExpanded ? "#85dacc" : "#C1B4B5")};
+  color: ${props => (props.isExpanded ? "#AE6855": "#C1B4B5")};
   cursor: default;
 
   ${props =>
@@ -71,12 +71,13 @@ export const Size = styled.span`
 `;
 
 export const Input = styled.input`
-  color: #ae6855;
+  color: #85dacc;
   font-size: 1.1rem;
   line-height: 2rem;
-  padding: 0.25rem 0.5rem;
+  padding: 0rem 0rem;
   margin: 1.5rem 1.5rem 0 1.5rem;
-  border: 0.1rem solid #ae6855;
+  border: 0rem;
+  border-bottom: 0.1rem solid #ea617a;
   border-radius: 2px;
   background-color: transparent;
 `;

@@ -57,7 +57,7 @@ export const Display = props => {
       {clickable && <Triangle isExpanded={isExpanded} />}
       <Highlighter
         caseSensitive={true}
-        highlightStyle={{ color: "#AE6855", backgroundColor: "transparent" }}
+        highlightStyle={{ color: "#85dacc", backgroundColor: "transparent" }}
         textToHighlight={name || ""}
         searchWords={[searchTerm]}
       />
