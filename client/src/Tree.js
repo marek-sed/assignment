@@ -41,19 +41,14 @@ export class Tree extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      flatTree: flattenTree(props.tree)
+      flatTree: flattenTree(props.tree, props.isSearching)
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.searchTerm.length > 2) {
-      const flatTree = flattenTree(nextProps.tree).filter(n => n.isInPath);
-      this.setState({ flatTree });
-    } else {
-      this.setState({
-        flatTree: flattenTree(nextProps.tree)
-      });
-    }
+    this.setState({
+      flatTree: flattenTree(nextProps.tree, nextProps.isSearching)
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {

@@ -1,28 +1,34 @@
 import { isEmpty } from "lodash";
 
-const flattenNodes = (nodes, depth = 0) => {
-  return nodes.reduce((acc, node) => {
-    const { id, children, name, size } = node;
-    const isExpanded = node.isExpanded || false;
-    const isInPath = node.isInPath || false;
 
-    const enhancedNode = {
-      id,
-      isExpanded,
-      isInPath,
-      name,
-      size,
-      depth
-    };
+export const flattenTree = (root, isSearching) => { 
+  
+  const flattenNodes = (nodes, depth = 0) => {
+    return nodes.reduce((acc, node) => {
+      const { id, children, name, size } = node;
+      const isExpanded = node.isExpanded || false;
+      const isInPath = node.isInPath || false;
 
-    if (!isExpanded) {
-      return [...acc, enhancedNode];
-    }
+      const enhancedNode = {
+        id,
+        isExpanded,
+        isInPath,
+        name,
+        size,
+        depth
+      };
 
-    return [...acc, enhancedNode, ...flattenNodes(children, depth + 1)];
-  }, []);
-};
+      if (isSearching && !isInPath) {
+        return acc;
+      }
 
-export const flattenTree = root => (isEmpty(root) ? 
-[] : 
-flattenNodes([root]));
+      if (!isExpanded) {
+        return [...acc, enhancedNode];
+      }
+
+      return [...acc, enhancedNode, ...flattenNodes(children, depth + 1)];
+    }, []);
+  };
+
+  return (isEmpty(root) ? [] : flattenNodes([root]));
+}

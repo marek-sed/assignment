@@ -22,7 +22,7 @@ injectGlobal`
  * expands or collapse a node
  * we can only expand or collapse one node at time so we use id
  * also chldnodes will remember their expanded state this way
- * @param  {ImmutableJS.Map} node
+ * @param  {Object} node
  * @param  {Number} id
  */
 function toggleNode(node, id) {
@@ -43,7 +43,7 @@ function toggleNode(node, id) {
 /**
  * Search is filtering the resulting tree,
  * only items which have "isInPath" equal to true are visible
- * @param  {ImmutableJS.Map} node
+ * @param  {Object} node
  * @param  {String} term
  */
 function search(node, term) {
@@ -113,8 +113,7 @@ class App extends React.Component {
         const searchedTree = search(state.tree, state.searchTerm);
         return {
           ...state,
-          searchedTree,
-          isSearching: false
+          searchedTree
         };
       });
     } else {
@@ -147,9 +146,9 @@ class App extends React.Component {
         ) : (
           <Tree
             searchTerm={searchTerm}
-            tree={searchTerm.length > 2 ? searchedTree : tree}
+            isSearching={isSearching}
+            tree={isSearching ? searchedTree : tree}
             toggle={this.toggle}
-            searchTerm={searchTerm}
           />
         )}
       </Page>
